@@ -8,7 +8,7 @@ Task_2:
 ![task_2](task_2/result.png)
 
 Task_2 execution result:
-![task_2_result](task_2/result.png)
+![task_2_result](task_2/task_2.png)
 
 There is a possibility that the formulas from Task_2 are equal. Let's try to prove it.
 
