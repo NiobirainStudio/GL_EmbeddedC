@@ -3,13 +3,13 @@
 		{
 			"type": "cppbuild",
 			"label": "Build Task",
-			"command": "C:/Program Files/LLVM/bin/clang.exe",
+			"command": "/usr/bin/gcc",
 			"args": [
 				"-Wall",
 				"-g",
 				"${workspaceFolder}/task_3/*.c",
 				"-o",
-				"${workspaceFolder}/build/${fileBasenameNoExtension}.exe"
+				"${workspaceFolder}/build/main.out" //${fileBasenameNoExtension}
 			],
 			"options": {
 				"cwd": "${fileDirname}"
@@ -18,8 +18,8 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "compiler: C:/Program Files/LLVM/bin/clang.exe"
-		}
+			"detail": "compiler: gcc"
+		},
 	],
 	"version": "2.0.0"
 }

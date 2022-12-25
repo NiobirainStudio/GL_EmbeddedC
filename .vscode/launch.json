@@ -6,15 +6,15 @@
     "configurations": [
         {
             "name": "Debug Task",
-            "type": "cppvsdbg",
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main.exe",
+            "program": "${workspaceFolder}/build/main.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/",
             "environment": [],
-            "console": "externalTerminal",
             "preLaunchTask": "Build Task"
-        }
+        },
+        
     ]
 } 
