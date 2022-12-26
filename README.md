@@ -15,3 +15,10 @@ There is a possibility that the formulas from Task_2 are equal. Let's try to pro
 
 Task_2 proof: <br />
 ![task_2_proof](task_2/proof.png)
+
+
+Task_3 execution result: <br />
+![task_3_result](task_3/result.jpg)
+
+Task_3 memory leak detection: <br />
+![task_3_result](task_3/leaks.jpg)
