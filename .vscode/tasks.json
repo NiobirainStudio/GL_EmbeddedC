@@ -1,0 +1,115 @@
+{	
+	"tasks": [
+		// {
+		// 	"type": "cppbuild",
+		// 	"label": "Debug Build Task",
+		// 	"command": "clang",
+		// 	"args": [
+		// 		"-Wall",
+		// 		"-D_DEBUG",
+		// 		"-g",
+		// 		"${workspaceFolder}\\task_4\\*.c",
+		// 		"-o",
+		// 		"${workspaceFolder}\\build\\debug\\main.exe"
+		// 	],
+		// 	"options": {
+		// 		"cwd": "${fileDirname}"
+		// 	},
+		// 	"problemMatcher": [
+		// 		"$gcc"
+		// 	],
+		// 	"group": "build",
+		// 	"detail": "compiler: clang"
+		// },
+		// {
+		// 	"type": "cppbuild",
+		// 	"label": "Release Build Task",
+		// 	"command": "clang",
+		// 	"args": [
+		// 		"-Wall",
+		// 		"-D_RELEASE",
+		// 		"-O3",
+		// 		"${workspaceFolder}\\task_4\\*.c",
+		// 		"-o",
+		// 		"${workspaceFolder}\\build\\release\\main.exe"
+		// 	],
+		// 	"options": {
+		// 		"cwd": "${fileDirname}"
+		// 	},
+		// 	"problemMatcher": [
+		// 		"$gcc"
+		// 	],
+		// 	"group": "build",
+		// 	"detail": "compiler: clang"
+		// },
+		{
+			"type": "shell",
+            "label": "Debug Build Task",
+            "command": "${workspaceFolder}/task_4/scripts/build.sh",
+            "windows": {
+                "command": "${workspaceFolder}/task_4/scripts/build.bat",
+                "args": [
+                    "windows",
+                    "debug"
+                ]
+            },
+            "linux": {
+                "args": [
+                    "linux",
+                    "debug"
+                ]
+            },
+            "osx": {
+                "args": [
+                    "macos",
+                    "debug"
+                ]
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+		{
+			"type": "shell",
+            "label": "Release Build Task",
+            "command": "${workspaceFolder}/task_4/scripts/build.sh",
+            "windows": {
+                "command": "${workspaceFolder}/task_4/scripts/build.bat",
+                "args": [
+                    "windows",
+                    "release"
+                ]
+            },
+            "linux": {
+                "args": [
+                    "linux",
+                    "release"
+                ]
+            },
+            "osx": {
+                "args": [
+                    "macos",
+                    "release"
+                ]
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+	],
+	"version": "2.0.0"
+}
