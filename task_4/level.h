@@ -40,9 +40,12 @@ void print_composite(Level* level, char** map) {
     }
 }
 
-void clear_on_input() {
+void clear_on_input(unsigned int str_height) {
+    for (unsigned int i = get_terminal_height() - str_height - 1; i > 0; i--) {
+        printf("\n");
+    }
     t_sleep(50);
-    system("cls");
+    //system("cls");
 }
 
 char _proceed_rec(
@@ -53,13 +56,13 @@ char _proceed_rec(
     
     completion_map[currPosY][currPosX] = '#';
     print_composite(level, completion_map);
-    clear_on_input();
+    clear_on_input(level->height);
 
     // Check left
     if (currPosX > 0 && completion_map[currPosY][currPosX - 1] != '#') {
         completion_map[currPosY][currPosX - 1] = '?';
         print_composite(level, completion_map);
-        clear_on_input();
+        clear_on_input(level->height);
         if (currPosY == level->ePosY && currPosX - 1 == level->ePosX) {
             return 1;
         } else if (level->map[currPosY][currPosX - 1] == ' ') {
@@ -73,7 +76,7 @@ char _proceed_rec(
     if (currPosY > 0 && completion_map[currPosY - 1][currPosX] != '#') {
         completion_map[currPosY - 1][currPosX] = '?';
         print_composite(level, completion_map);
-        clear_on_input();
+        clear_on_input(level->height);
         if (currPosY - 1 == level->ePosY && currPosX == level->ePosX) {
             return 1;
         } else if (level->map[currPosY - 1][currPosX] == ' ') {
@@ -87,7 +90,7 @@ char _proceed_rec(
     if (currPosX + 1 <= level->width && completion_map[currPosY][currPosX + 1] != '#') {
         completion_map[currPosY][currPosX + 1] = '?';
         print_composite(level, completion_map);
-        clear_on_input();
+        clear_on_input(level->height);
         if (currPosY == level->ePosY && currPosX + 1 == level->ePosX) {
             return 1;
         } else if (level->map[currPosY][currPosX + 1] == ' ') {
@@ -101,7 +104,7 @@ char _proceed_rec(
     if (currPosY + 1 < level->height && completion_map[currPosY + 1][currPosX] != '#') {
         completion_map[currPosY + 1][currPosX] = '?';
         print_composite(level, completion_map);
-        clear_on_input();
+        clear_on_input(level->height);
         if (currPosY + 1 == level->ePosY && currPosX == level->ePosX) {
             return 1;
         } else if (level->map[currPosY + 1][currPosX] == ' ') {
@@ -113,7 +116,7 @@ char _proceed_rec(
     
     completion_map[currPosY][currPosX] = ' ';
     print_composite(level, completion_map);
-    clear_on_input();
+    clear_on_input(level->height);
     return 0;
 }
 
@@ -130,10 +133,11 @@ void solve_level(Level* level) {
     // Start the recursive algorithm
     char result = _proceed_rec(level, completion_map, level->sPosX, level->sPosY);
     print_composite(level, completion_map);
+    clear_on_input(level->height);
     if (result) {
-        printf("Maze solved!\n");
+        printf("Maze solved! ");
     } else {
-        printf("Unable to solve the maze!\n");
+        printf("Unable to solve the maze! ");
     }
 
     // Delete the completion map
@@ -147,13 +151,11 @@ Level* load_level_from_file(const char* levelPath) {
     
     // Viev the file
     FILE *file;
-    file = fopen(levelPath, "r");
+    fopen_s(&file, levelPath, "r");
     
     // Check if the level exists
-    if (file == NULL) {
-        perror("Unable to open file!\n");
-        return NULL;
-    }
+    if (file == NULL) 
+        return err_out("Unable to open file!");
 
     // Create the level and init the fields
     Level* level = (Level*)malloc(sizeof(Level));
@@ -181,8 +183,8 @@ Level* load_level_from_file(const char* levelPath) {
             case '\n':  // LINE END
                 level->height++;
                 if (level->width != 0 && level->width != i) {
-                    printf("Inconsistent level width!\n");
-                    return NULL;
+                    free(level);
+                    return err_out("Inconsistent level width!");
                 }
                 level->width = i;
                 i = 0;
@@ -191,8 +193,8 @@ Level* load_level_from_file(const char* levelPath) {
             case 'S':   // START
                 sCount++;
                 if (sCount > 1) {
-                    printf("Levels can't have more than one start points!\n");
-                    return NULL;
+                    free(level);
+                    return err_out("Levels can't have more than one start points!");
                 }
                 level->sPosX = i;
                 level->sPosY = level->height;
@@ -202,8 +204,8 @@ Level* load_level_from_file(const char* levelPath) {
             case 'E':   // EXIT
                 eCount++;
                 if (eCount > 1) {
-                    printf("Levels can't have more than one exit points!\n");
-                    return NULL;
+                    free(level);
+                    return err_out("Levels can't have more than one exit points!");
                 }
                 level->ePosX = i;
                 level->ePosY = level->height;
@@ -211,14 +213,19 @@ Level* load_level_from_file(const char* levelPath) {
                 break;
 
             default:
-                printf("Unknown level symbol!\n");
-                return NULL;
+                free(level);
+                return err_out("Unknown level symbol!");
         }
     }
 
     if (sCount != 1 || eCount != 1) {
-        printf("No start or exit points!\n");
-        return NULL;
+        free(level);
+        return err_out("No start or exit points!");
+    }
+
+    if (level->width == 0) {
+        free(level);
+        return err_out("Level file is empty!");
     }
 
     level->height++;
@@ -248,6 +255,9 @@ Level* load_level_from_file(const char* levelPath) {
 }
 
 void destroy_level(Level* level) {
+    if (level == NULL)
+        return;
+    
     for (unsigned int i = 0; i < level->width; i++)
         free(level->map[i]);
  

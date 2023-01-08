@@ -4,7 +4,24 @@
 #include <string.h>     // Basic string functionality
 #include <stdlib.h>     // malloc and friends
 
+#if _WIN32
+#include<windows.h>
+#elif linux
+#include<unistd.h>
+#endif
 
+
+
+void* err_out(const char* message) {
+    printf("%s\n", message);
+    return NULL;
+}
+
+unsigned int get_terminal_height() {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    return csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+}
 
 unsigned int get_last_index_of(const char* string, char element) {
     unsigned long long ind = -1;
@@ -34,8 +51,7 @@ char is_of_extension(const char* filePath, const char* extension) {
             result = 0;
 
     return result;
-} 
-
+}
 
 const char* concat_path_from_exe_path(const char* exePath, const char* patternHead) {
 
@@ -51,10 +67,8 @@ const char* concat_path_from_exe_path(const char* exePath, const char* patternHe
     char* resultPath = (char*)malloc(resultSize + 1);
     
     // Memory exception
-    if (resultPath == NULL) {
-        printf("Unable to allocate heap memory!\n");
-        return NULL;
-    }
+    if (resultPath == NULL) 
+        return err_out("Unable to allocate heap memory!");
 
     // String ending
     resultPath[resultSize] = '\0';
