@@ -5,8 +5,8 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Build Task",
-            "type": "cppvsdbg",
+            "name": "Windows Debugging Task",
+            "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/main.exe",
             "args": [],
@@ -14,7 +14,19 @@
             "cwd": "${workspaceFolder}/",
             "environment": [],
             "externalConsole": true,
-            "preLaunchTask": "Debug Build Task"
+            "preLaunchTask": "Build Task"
+        },
+        {
+            "name": "Linux Debugging Task",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/debug/main.out",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/",
+            "environment": [],
+            "externalConsole": true,
+            "preLaunchTask": "Build Task"
         }
     ]
 } 

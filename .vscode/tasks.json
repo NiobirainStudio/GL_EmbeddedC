@@ -1,68 +1,20 @@
 {	
 	"tasks": [
-		// {
-		// 	"type": "cppbuild",
-		// 	"label": "Debug Build Task",
-		// 	"command": "clang",
-		// 	"args": [
-		// 		"-Wall",
-		// 		"-D_DEBUG",
-		// 		"-g",
-		// 		"${workspaceFolder}\\task_4\\*.c",
-		// 		"-o",
-		// 		"${workspaceFolder}\\build\\debug\\main.exe"
-		// 	],
-		// 	"options": {
-		// 		"cwd": "${fileDirname}"
-		// 	},
-		// 	"problemMatcher": [
-		// 		"$gcc"
-		// 	],
-		// 	"group": "build",
-		// 	"detail": "compiler: clang"
-		// },
-		// {
-		// 	"type": "cppbuild",
-		// 	"label": "Release Build Task",
-		// 	"command": "clang",
-		// 	"args": [
-		// 		"-Wall",
-		// 		"-D_RELEASE",
-		// 		"-O3",
-		// 		"${workspaceFolder}\\task_4\\*.c",
-		// 		"-o",
-		// 		"${workspaceFolder}\\build\\release\\main.exe"
-		// 	],
-		// 	"options": {
-		// 		"cwd": "${fileDirname}"
-		// 	},
-		// 	"problemMatcher": [
-		// 		"$gcc"
-		// 	],
-		// 	"group": "build",
-		// 	"detail": "compiler: clang"
-		// },
 		{
 			"type": "shell",
-            "label": "Debug Build Task",
-            "command": "${workspaceFolder}/task_4/scripts/build.sh",
+            "label": "Build Task",
             "windows": {
                 "command": "${workspaceFolder}/task_4/scripts/build.bat",
                 "args": [
                     "windows",
-                    "debug"
+                    "${input:build_mode}"
                 ]
             },
             "linux": {
+                "command": "${workspaceFolder}/task_4/scripts/build.sh",
                 "args": [
                     "linux",
-                    "debug"
-                ]
-            },
-            "osx": {
-                "args": [
-                    "macos",
-                    "debug"
+                    "${input:build_mode}"
                 ]
             },
             "options": {
@@ -76,40 +28,42 @@
                 "isDefault": true
             }
         },
-		{
+        {
 			"type": "shell",
-            "label": "Release Build Task",
-            "command": "${workspaceFolder}/task_4/scripts/build.sh",
-            "windows": {
-                "command": "${workspaceFolder}/task_4/scripts/build.bat",
-                "args": [
-                    "windows",
-                    "release"
-                ]
-            },
+            "label": "Valgrind Build & Check Task",
             "linux": {
-                "args": [
-                    "linux",
-                    "release"
-                ]
-            },
-            "osx": {
-                "args": [
-                    "macos",
-                    "release"
-                ]
+                "command": "valgrind build/${input:build_mode}/main.out",
             },
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
+            "problemMatcher": [],
+            "dependsOn": [
+                "Build Task"
+            ]
         },
 	],
+    "inputs": [
+        {
+            "id": "build_mode",
+            "description": "Build Mode: ...",
+            "default": "debug",
+            "type": "pickString",
+            "options": [
+                "debug",
+                "release"
+            ]
+        },
+        {
+            "id": "requires_prebuild",
+            "description": "Requires Prebuild: ...",
+            "default": "Yes",
+            "type": "pickString",
+            "options": [
+                "Build Task",
+                ""
+            ]
+        }
+    ],
 	"version": "2.0.0"
 }

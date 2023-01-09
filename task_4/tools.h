@@ -6,8 +6,21 @@
 
 #if _WIN32
 #include<windows.h>
+
+unsigned int get_terminal_height() {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    return csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+}
 #elif linux
+#include <sys/ioctl.h>
 #include<unistd.h>
+
+unsigned int get_terminal_height() {
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    return w.ws_row;
+}
 #endif
 
 
@@ -17,15 +30,9 @@ void* err_out(const char* message) {
     return NULL;
 }
 
-unsigned int get_terminal_height() {
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-    return csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-}
-
-unsigned int get_last_index_of(const char* string, char element) {
-    unsigned long long ind = -1;
-    for (unsigned long long a = strlen(string); a > 0; a--) 
+long long get_last_index_of(const char* string, char element) {
+    long long ind = -1;
+    for (long long a = strlen(string); a > 0; a--) 
         if (string[a] == element) {
             ind = a;
             break;
@@ -53,7 +60,7 @@ char is_of_extension(const char* filePath, const char* extension) {
     return result;
 }
 
-const char* concat_path_from_exe_path(const char* exePath, const char* patternHead) {
+char* concat_path_from_exe_path(const char* exePath, const char* patternHead) {
 
     unsigned int patternLen = strlen(patternHead);
 

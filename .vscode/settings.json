@@ -1,11 +1,7 @@
 {
-    //"editor.letterSpacing": 8.0,
     "workbench.colorTheme": "Andromeda Italic Bordered",
     "xmlTools.enforcePrettySelfClosingTagOnFormat": true,
     "editor.minimap.enabled": false,
-    "terminal.integrated.fontFamily": "Consolas",
-    "terminal.integrated.fontWeight": "1",
-    "terminal.integrated.fontSize": 12,
     "editor.fontFamily": "Consolas",
     "editor.fontSize": 15,
     "editor.fontWeight": "1",
