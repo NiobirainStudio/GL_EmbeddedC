@@ -29,8 +29,8 @@ void clear_on_input() {
 #include<unistd.h>
 
 void clear_on_input() {
-    // TO_TEST:
-    printf("%c[%d;%df",0x1B, 0, 0);
+    printf("\033[%d;%dH",1,1);
+    usleep(FRAME_TIME_MS * 1000);
 }
 #endif
 
@@ -150,6 +150,9 @@ void solve_level(Level* level) {
         for (unsigned int b = 0; b < level->width; b++) 
             completion_map[a][b] = SPACE_CHAR;
 
+    // Clear the screen before printing
+    system("clear");
+
     // Start the recursive algorithm
     char result = _proceed_rec(level, completion_map, level->sPosX, level->sPosY);
     completion_map[level->sPosY][level->sPosX] = START_CHAR;
@@ -196,7 +199,7 @@ Level* load_level_from_file(const char* levelPath) {
     unsigned int i = 0, j = 0;
 
     // Read the file char-by-char
-    char c, l;
+    char c, l = '-';
     while ((c = fgetc(file)) != EOF)
     {
         switch (c) {

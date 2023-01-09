@@ -14,11 +14,15 @@ mkdir $CURR_DIRECTORY/../../build/$TARGET/
 # Copy files
 cp $CURR_DIRECTORY/../level.level $CURR_DIRECTORY/../../build/$TARGET/
 
-if [ ${TARGET,,} = "release" ]
+if [ $TARGET = "release" ]
 then
     COMPILE_STR="-D_RELEASE -O3 -o $CURR_DIRECTORY/../../build/release/main.out"
-elif [ ${TARGET,,} = "debug" ]
+elif [ $TARGET = "debug" ]
+then
     COMPILE_STR="-D_DEBUG -g -o $CURR_DIRECTORY/../../build/debug/main.out"
+else
+    echo "Unknown compilation mode!"
+    exit 1
 fi
 
 # Compiling the project
