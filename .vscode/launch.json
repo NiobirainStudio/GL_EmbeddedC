@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Windows Debugging Task",
-            "type": "cppdbg",
+            "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/main.exe",
             "args": [],

@@ -4,6 +4,8 @@
 #include <string.h>     // Basic string functionality
 #include <stdlib.h>     // malloc and friends
 
+
+// Get terminal height (platform specific)
 #if _WIN32
 #include<windows.h>
 
@@ -24,12 +26,13 @@ unsigned int get_terminal_height() {
 #endif
 
 
-
+// Easy error printing function
 void* err_out(const char* message) {
     printf("%s\n", message);
     return NULL;
 }
 
+// Get the last index of an element from a string. Return -1 if not found
 long long get_last_index_of(const char* string, char element) {
     long long ind = -1;
     for (long long a = strlen(string); a > 0; a--) 
@@ -40,6 +43,7 @@ long long get_last_index_of(const char* string, char element) {
     return ind;
 }
 
+// Check if the specified file path has a certain extension
 char is_of_extension(const char* filePath, const char* extension) {
     unsigned long long dotInd = get_last_index_of(filePath, '.');
     if (dotInd == -1) {
@@ -60,6 +64,7 @@ char is_of_extension(const char* filePath, const char* extension) {
     return result;
 }
 
+// Replace exe path tail with another string
 char* concat_path_from_exe_path(const char* exePath, const char* patternHead) {
 
     unsigned int patternLen = strlen(patternHead);

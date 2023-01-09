@@ -8,7 +8,7 @@ SRC_FOLDER="$CURR_DIRECTORY/../*.c"
 echo "Building everything on $PLATFORM ($TARGET)..."
 
 # Create build directory if not exists
-mkdir -p $CURR_DIRECTORY/../../build/$TARGET/
+mkdir $CURR_DIRECTORY/../../build/$TARGET/
 
 # Copy files
 cp $CURR_DIRECTORY/../level.level $CURR_DIRECTORY/../../build/$TARGET/

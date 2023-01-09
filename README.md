@@ -22,3 +22,6 @@ Task_3 execution result: <br />
 
 Task_3 memory leak detection: <br />
 ![task_3_result](task_3/leaks.jpg)
+
+Task_4 execution result: <br />
+![task_4_result](task_4/result.jpg)

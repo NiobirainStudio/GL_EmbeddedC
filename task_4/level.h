@@ -1,6 +1,9 @@
 #pragma once
 #include <stdio.h>      // printf
 
+
+// Const define section 
+// (if your level has other characters you may replace the current ones)
 #define WALL_CHAR 'X'
 #define SPACE_CHAR ' '
 #define START_CHAR 'S'
@@ -9,6 +12,8 @@
 #define CHECK_CHAR '?'
 #define FRAME_TIME_MS 50
 
+
+// Sleep and terminal padding
 #if _WIN32
 #include<windows.h>
 #define t_sleep(time) Sleep(time)
@@ -25,7 +30,7 @@
 #include "tools.h"      // Tools header
 
 
-
+// Maze level structure 
 typedef struct
 {
     // Map params
@@ -39,6 +44,7 @@ typedef struct
     unsigned int ePosX, ePosY;
 } Level;
 
+// Print the level and it's completion mask
 void print_composite(Level* level, char** map) {
     for (unsigned int a = 0; a < level->height; a++) {
         for (unsigned int b = 0; b < level->width; b++) 
@@ -53,6 +59,7 @@ void print_composite(Level* level, char** map) {
     }
 }
 
+// Move the terminal to next frame
 void clear_on_input(unsigned int str_height) {
     for (unsigned int i = get_terminal_height() - str_height - 1; i > 0; i--) {
         printf("\n");
@@ -60,6 +67,7 @@ void clear_on_input(unsigned int str_height) {
     t_sleep(FRAME_TIME_MS);
 }
 
+// *Private* function for recursive exit search 
 char _proceed_rec(
     Level* level,
     char** completion_map,
@@ -132,6 +140,7 @@ char _proceed_rec(
     return 0;
 }
 
+// Tries to solve the specified level
 void solve_level(Level* level) {
     // Create the completion map
     char** completion_map = (char**)malloc(level->width * sizeof(char*));
@@ -162,6 +171,7 @@ void solve_level(Level* level) {
     free(completion_map);
 }
 
+// Load level from a file
 Level* load_level_from_file(const char* levelPath) {
     
     // Viev the file
@@ -192,7 +202,7 @@ Level* load_level_from_file(const char* levelPath) {
     while ((c = fgetc(file)) != EOF)
     {
         switch (c) {
-            case WALL_CHAR:   // WALL
+            case WALL_CHAR:    // WALL
                 i++;
                 break;
             
@@ -200,8 +210,10 @@ Level* load_level_from_file(const char* levelPath) {
                 i++;
                 break;
             
-            case '\n':  // LINE END
+            case '\n':         // LINE END
                 level->height++;
+
+                // Level width is different in certain parts
                 if (level->width != 0 && level->width != i) {
                     free(level);
                     fclose(file);
@@ -213,6 +225,8 @@ Level* load_level_from_file(const char* levelPath) {
             
             case START_CHAR:   // START
                 sCount++;
+
+                // Too many start points
                 if (sCount > 1) {
                     free(level);
                     fclose(file);
@@ -225,6 +239,8 @@ Level* load_level_from_file(const char* levelPath) {
             
             case EXIT_CHAR:   // EXIT
                 eCount++;
+
+                // Too many exit points
                 if (eCount > 1) {
                     free(level);
                     fclose(file);
@@ -235,19 +251,25 @@ Level* load_level_from_file(const char* levelPath) {
                 i++;
                 break;
 
-            default:
+            default:           // UNKNOWS CHAR
                 free(level);
                 fclose(file);
                 return err_out("Unknown level symbol!");
         }
     }
 
+    // If the level is a single line
+    if (level->height == 0 && i != 0)
+        level->width = i;
+
+    // No start/exit points found
     if (sCount != 1 || eCount != 1) {
         free(level);
         fclose(file);
         return err_out("No start or exit points!");
     }
 
+    // Level file is empty
     if (level->width == 0) {
         free(level);
         fclose(file);

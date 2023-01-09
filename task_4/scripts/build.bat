@@ -9,7 +9,7 @@ SET SRC_FOLDER=%CURR_DIRECTORY%..\*.c
 ECHO Building everything on %PLATFORM% (%TARGET%)...
 
 REM Create build directory if not exists
-mkdir -p %CURR_DIRECTORY%..\..\build\%TARGET%\
+mkdir %CURR_DIRECTORY%..\..\build\%TARGET%\
 
 REM Copy files
 cp %CURR_DIRECTORY%..\level.level %CURR_DIRECTORY%..\..\build\%TARGET%\
@@ -21,4 +21,4 @@ if "%TARGET%" == "release" (
 )
 
 REM Compiling the project
-gcc -Wall %SRC_FOLDER% %COMPILE_STR%
+clang -Wall %SRC_FOLDER% %COMPILE_STR%
