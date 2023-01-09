@@ -1,3 +1,4 @@
+#!/bin/bash
 # Build script for assembling the project and copying the required files over to build directory
 
 CURR_DIRECTORY=$(dirname $0)
@@ -13,10 +14,10 @@ mkdir $CURR_DIRECTORY/../../build/$TARGET/
 # Copy files
 cp $CURR_DIRECTORY/../level.level $CURR_DIRECTORY/../../build/$TARGET/
 
-if [ $TARGET = "release" ]
+if [ ${TARGET,,} = "release" ]
 then
     COMPILE_STR="-D_RELEASE -O3 -o $CURR_DIRECTORY/../../build/release/main.out"
-else
+elif [ ${TARGET,,} = "debug" ]
     COMPILE_STR="-D_DEBUG -g -o $CURR_DIRECTORY/../../build/debug/main.out"
 fi
 

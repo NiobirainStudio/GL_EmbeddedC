@@ -49,7 +49,12 @@
             "text": "INFO:",
             "color": "rgba(43,136,185,1)",
             "backgroundColor": "rgba(0,0,0,0)"
-        }
+        },
+        {
+            "text": "TO_TEST:",
+            "color": "rgba(0,0,0,1)",
+            "backgroundColor": "rgba(255,255,0,1)"
+        },
     ],
     "todohighlight.defaultStyle": {
         "color": "red",

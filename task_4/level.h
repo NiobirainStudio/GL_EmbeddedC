@@ -13,18 +13,25 @@
 #define FRAME_TIME_MS 50
 
 
-// Sleep and terminal padding
+void clear_on_input();
+
+// Terminal cursor reset (platform specific)
 #if _WIN32
 #include<windows.h>
-#define t_sleep(time) Sleep(time)
-#define LAST_PADDING 0
+
+void clear_on_input() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD pos = {0, 0};
+    SetConsoleCursorPosition(hConsole, pos);
+    Sleep(FRAME_TIME_MS);
+}
 #elif linux
 #include<unistd.h>
-#define t_sleep(time) usleep(time * 1000)
-#define LAST_PADDING 4
-#else
-#define t_sleep(time)
-#define LAST_PADDING 0
+
+void clear_on_input() {
+    // TO_TEST:
+    printf("%c[%d;%df",0x1B, 0, 0);
+}
 #endif
 
 #include "tools.h"      // Tools header
@@ -59,14 +66,6 @@ void print_composite(Level* level, char** map) {
     }
 }
 
-// Move the terminal to next frame
-void clear_on_input(unsigned int str_height) {
-    for (unsigned int i = get_terminal_height() - str_height - 1; i > 0; i--) {
-        printf("\n");
-    }
-    t_sleep(FRAME_TIME_MS);
-}
-
 // *Private* function for recursive exit search 
 char _proceed_rec(
     Level* level,
@@ -76,13 +75,13 @@ char _proceed_rec(
     
     completion_map[currPosY][currPosX] = SNAKE_CHAR;
     print_composite(level, completion_map);
-    clear_on_input(level->height);
+    clear_on_input();
 
     // Check left
     if (currPosX > 0 && completion_map[currPosY][currPosX - 1] != SNAKE_CHAR) {
         completion_map[currPosY][currPosX - 1] = CHECK_CHAR;
         print_composite(level, completion_map);
-        clear_on_input(level->height);
+        clear_on_input();
         if (currPosY == level->ePosY && currPosX - 1 == level->ePosX) {
             return 1;
         } else if (level->map[currPosY][currPosX - 1] == SPACE_CHAR) {
@@ -96,7 +95,7 @@ char _proceed_rec(
     if (currPosY > 0 && completion_map[currPosY - 1][currPosX] != SNAKE_CHAR) {
         completion_map[currPosY - 1][currPosX] = CHECK_CHAR;
         print_composite(level, completion_map);
-        clear_on_input(level->height);
+        clear_on_input();
         if (currPosY - 1 == level->ePosY && currPosX == level->ePosX) {
             return 1;
         } else if (level->map[currPosY - 1][currPosX] == SPACE_CHAR) {
@@ -110,7 +109,7 @@ char _proceed_rec(
     if (currPosX + 1 <= level->width && completion_map[currPosY][currPosX + 1] != SNAKE_CHAR) {
         completion_map[currPosY][currPosX + 1] = CHECK_CHAR;
         print_composite(level, completion_map);
-        clear_on_input(level->height);
+        clear_on_input();
         if (currPosY == level->ePosY && currPosX + 1 == level->ePosX) {
             return 1;
         } else if (level->map[currPosY][currPosX + 1] == SPACE_CHAR) {
@@ -124,7 +123,7 @@ char _proceed_rec(
     if (currPosY + 1 < level->height && completion_map[currPosY + 1][currPosX] != SNAKE_CHAR) {
         completion_map[currPosY + 1][currPosX] = CHECK_CHAR;
         print_composite(level, completion_map);
-        clear_on_input(level->height);
+        clear_on_input();
         if (currPosY + 1 == level->ePosY && currPosX == level->ePosX) {
             return 1;
         } else if (level->map[currPosY + 1][currPosX] == SPACE_CHAR) {
@@ -136,7 +135,7 @@ char _proceed_rec(
     
     completion_map[currPosY][currPosX] = SPACE_CHAR;
     print_composite(level, completion_map);
-    clear_on_input(level->height);
+    clear_on_input();
     return 0;
 }
 
@@ -157,12 +156,11 @@ void solve_level(Level* level) {
     if (result) {
         completion_map[level->ePosY][level->ePosX] = EXIT_CHAR;
         print_composite(level, completion_map);
-        printf("Maze solved! ");
+        printf("Maze solved!\n");
     } else {
         print_composite(level, completion_map);
-        printf("Unable to solve the maze! ");
+        printf("Unable to solve the maze!\n");
     }
-    clear_on_input(level->height + LAST_PADDING);
 
     // Delete the completion map
     for (unsigned int i = 0; i < level->width; i++)
@@ -198,7 +196,7 @@ Level* load_level_from_file(const char* levelPath) {
     unsigned int i = 0, j = 0;
 
     // Read the file char-by-char
-    char c;
+    char c, l;
     while ((c = fgetc(file)) != EOF)
     {
         switch (c) {
@@ -211,6 +209,8 @@ Level* load_level_from_file(const char* levelPath) {
                 break;
             
             case '\n':         // LINE END
+                if (i == 0) 
+                    break;
                 level->height++;
 
                 // Level width is different in certain parts
@@ -256,6 +256,7 @@ Level* load_level_from_file(const char* levelPath) {
                 fclose(file);
                 return err_out("Unknown level symbol!");
         }
+        l = c;
     }
 
     // If the level is a single line
@@ -276,7 +277,8 @@ Level* load_level_from_file(const char* levelPath) {
         return err_out("Level file is empty!");
     }
 
-    level->height++;
+    if (l != '\n')
+        level->height++;
 
 
 
@@ -292,7 +294,7 @@ Level* load_level_from_file(const char* levelPath) {
         if (c == SPACE_CHAR || c == WALL_CHAR) {
             level->map[j][i] = c;
             i++;
-        } else if (c == '\n') {
+        } else if (c == '\n' && i != 0) {
             j++;
             i = 0;
         } else if (c == START_CHAR || c == EXIT_CHAR) 
